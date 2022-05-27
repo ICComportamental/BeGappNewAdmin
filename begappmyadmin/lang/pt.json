@@ -1,0 +1,17 @@
+{
+    "username":"username",
+    "password":"password",
+    "confirmPassword":"Confirmar Senha",
+    "forgotPassword":"Esqueci minha senha",
+    "register":"Cadastrar",
+    "ok":"ok",
+    "invalidLogin":"Login Invalido!",
+    "Required field":"Campo Obrigatorio",
+    "RegisterUser":"Cadastrar usuário",
+    "Name":"Nome",
+    "Email":"Email",
+    "cancel":"Cancelar",
+    "Send":"Enviar",
+    "checkEmail":"Verifique o seu email para concluir o cadastro"
+
+}

@@ -1,0 +1,16 @@
+{
+    "username":"username",
+    "password":"password",
+    "confirmPassword":"Confirm Password",
+    "forgotPassword":"Forgot Password",
+    "register":"register",
+    "ok":"ok",
+    "invalidLogin":"Invalid Login!",
+    "Required field":"Required field",
+    "RegisterUser":"Register User",
+    "Name":"nome",
+    "Email":"email",
+    "cancel":"Cancel",
+    "Send":"Send",
+    "checkEmail":"Check your email to complete your registration"
+}
