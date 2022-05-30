@@ -6,7 +6,6 @@ import 'package:begappmyadmin/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -242,15 +241,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ]))),
-              back: 
-              RequestNewUser(
+              back: RequestNewUser(
                 onCancel: () {
                   setState(() {
                     cardKey.currentState!.toggleCard();
                   });
                 },
-              )
-              )),
+              ))),
     );
   }
 }
