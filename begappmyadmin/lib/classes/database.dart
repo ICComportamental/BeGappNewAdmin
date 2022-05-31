@@ -54,4 +54,24 @@ class Database {
     print("response: ${res.statusCode}");
     return res;
   }
+
+  static activateUser(String userEmail, String passwordRecoveryCode) async {
+    String url = "https://api.begapp.com.br/api/v1/auth/ActivateUser";
+    var res = await http.post(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "UserEmail": userEmail,
+          "PasswordRecoveryCode": passwordRecoveryCode,
+        }));
+    String body = res.body;
+    print(body);
+    // var json = jsonDecode(body);
+
+    // print('${json.runtimeType} : $json');
+
+    // print("response: ${res.statusCode}");
+    return body;
+  }
 }

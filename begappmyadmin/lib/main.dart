@@ -71,12 +71,13 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    print("V1");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
-            initialRoute: "/confirm-account",
+            initialRoute: "/login",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.
               '/login': (context) => LoginPage(),

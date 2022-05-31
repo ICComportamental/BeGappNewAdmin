@@ -92,9 +92,9 @@ class _LoginPageState extends State<LoginPage> {
     // username.text = "usuario";
     // password.text = "a";
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: (() {
-        Database.validateLogin("yasmin.carolina12@gmail.com", "1234");
-      })),
+      // floatingActionButton: FloatingActionButton(onPressed: (() {
+      //   Database.validateLogin("yasmin.carolina12@gmail.com", "1234");
+      // })),
       body: Container(
           color: Colors.blue,
           alignment: Alignment.center,
