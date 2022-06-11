@@ -2,6 +2,7 @@
     "username":"username",
     "password":"password",
     "confirmPassword":"Confirmar Senha",
+    "newPassword":"Nova Senha",
     "forgotPassword":"Esqueci minha senha",
     "register":"Cadastrar",
     "ok":"ok",
@@ -12,6 +13,11 @@
     "Email":"Email",
     "cancel":"Cancelar",
     "Send":"Enviar",
-    "checkEmail":"Verifique o seu email para concluir o cadastro"
+    "checkEmail":"Verifique o seu email para concluir o cadastro",
+    "continue": "Continuar",
+    "resetPassword":"Recuperação de Senha",
+    "infoEmail":"Informe o email vinculado a conta",
+    "check your email":"Verifique o seu email para prosseguir",
+    "confirm":"Confirmar"
 
 }

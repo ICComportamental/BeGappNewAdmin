@@ -74,4 +74,48 @@ class Database {
     // print("response: ${res.statusCode}");
     return body;
   }
+
+  static forgotPasswordRequest(String userEmail) async {
+    String url =
+        "https://api.begapp.com.br/api/v1/auth/ForgotMyPasswordRequest";
+    // "https://api.begapp.com.br/api/v1/auth/ForgotMyPasswordRequest";
+    var res = await http.post(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "UserName": userEmail,
+        }));
+    String body = res.body;
+    debugPrint(body);
+    var json = jsonDecode(body);
+    final message = json['message'];
+    debugPrint(message);
+    return message;
+  }
+
+  static resetPassword({
+    required String userEmail,
+    required String newPassword,
+    required String newPasswordConfirm,
+    required String passwordRecoveryCode,
+  }) async {
+    String url = "https://api.begapp.com.br/api/v1/auth/ForgotMyPassword";
+    var res = await http.post(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "UserName": userEmail,
+          "NewPassword": newPassword,
+          "NewPasswordConfirm": newPasswordConfirm,
+          "PasswordRecoveryCode": passwordRecoveryCode
+        }));
+    String body = res.body;
+    debugPrint(body);
+    var json = jsonDecode(body);
+    final message = json['message'];
+    debugPrint(message);
+    return message;
+  }
 }

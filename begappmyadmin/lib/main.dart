@@ -1,12 +1,14 @@
 import 'package:begappmyadmin/AppLanguage.dart';
 import 'package:begappmyadmin/app_localizations.dart';
-import 'package:begappmyadmin/login/pages/confirmAccount.page.dart';
+import 'package:begappmyadmin/login/pages/ResetPassword.page.dart';
+import 'package:begappmyadmin/login/pages/confirmAccount.dart';
 import 'package:begappmyadmin/login/pages/login.page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'login/pages/forgotPasswordSendEmail.page.dart';
 import 'pages/home.page.dart';
 
 void main() async {
@@ -71,17 +73,23 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V1");
+    print("V2");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
-            initialRoute: "/login",
+            initialRoute: "/ForgotPassword",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.
               '/login': (context) => LoginPage(),
               '/confirm-account': (context) => ConfirmAccount(
+                    myurl: widget.myurl,
+                    userEmail: widget.userEmail,
+                    passwordRecoveryCode: widget.passwordRecoveryCode,
+                  ),
+              '/ForgotPassword': (context) => ForgotPasswordSendEmailPage(),
+              '/ResetPassword': (context) => ResetPassword(
                     myurl: widget.myurl,
                     userEmail: widget.userEmail,
                     passwordRecoveryCode: widget.passwordRecoveryCode,

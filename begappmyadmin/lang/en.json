@@ -2,6 +2,7 @@
     "username":"username",
     "password":"password",
     "confirmPassword":"Confirm Password",
+    "newPassword":"Nova Senha",
     "forgotPassword":"Forgot Password",
     "register":"register",
     "ok":"ok",
@@ -12,5 +13,12 @@
     "Email":"email",
     "cancel":"Cancel",
     "Send":"Send",
-    "checkEmail":"Check your email to complete your registration"
+    "checkEmail":"Check your email to complete your registration",
+    "continue": "Continue",
+    "resetPassword":"Reset Password",
+    "infoEmail":"Enter the email linked to the account",
+    "check your email":"Check your email",
+    "confirm":"Confirm"
+
+
 }
