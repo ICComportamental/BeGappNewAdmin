@@ -48,8 +48,9 @@ void main() async {
 
 late SharedPreferences localStorage;
 
-TextEditingController username = new TextEditingController();
-TextEditingController password = new TextEditingController();
+TextEditingController username =
+    new TextEditingController(text: "yasmin.carolina12@gmail.com");
+TextEditingController password = new TextEditingController(text: "1234");
 
 class MyApp extends StatefulWidget {
   static Future init() async {
@@ -73,15 +74,16 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V2");
+    print("V3 - create game");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
-            initialRoute: "/ForgotPassword",
+            initialRoute: "/homepage",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.
+              '/homepage': (context) => HomePage(),
               '/login': (context) => LoginPage(),
               '/confirm-account': (context) => ConfirmAccount(
                     myurl: widget.myurl,

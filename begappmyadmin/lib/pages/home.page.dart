@@ -13,11 +13,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+          title: const Text(
+        "Plataforma de jogos comportamentais",
+        textAlign: TextAlign.center,
+      )),
       body: Container(
         alignment: Alignment.center,
         child: TextButton(
-          child: Text("open"),
+          child: Text("Adicionar Jogo"),
           onPressed: () async {
             await Dialogs.showAddNewGame(
               context,

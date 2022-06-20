@@ -8,8 +8,8 @@ class Game {
   String name;
   String description;
   String creator;
-  Map<String, String> parameters;
-  Map<String, String> defaultParameters;
+  Map parameters;
+  Map defaultParameters;
 
   Game(
     this.name,

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:begappmyadmin/app_localizations.dart';
+import 'package:begappmyadmin/classes/database.dart';
+import 'package:begappmyadmin/classes/dialogs.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +29,15 @@ class _CreateGameState extends State<CreateGame> {
     "recurring election disabled",
     "recurring election enabled"
   ];
-  List<String> types = ["int", "String", "Double", "Float", "bool"];
+  // List<String> types = ["int", "String", "Double", "Float", "bool"];
+  List<String> types = [
+    "String",
+    "Int32",
+    "UInt32",
+    "Boolean",
+    "Double",
+    "Decimal"
+  ];
 
   // String type = "String";
   bool electionAndDistribution = false;
@@ -35,21 +47,6 @@ class _CreateGameState extends State<CreateGame> {
   double labelSize = 0;
   int intLength = 11;
 
-  var txtExperimentName = new TextEditingController();
-  var txtDesc = new TextEditingController();
-  var txtMaxTokens = new TextEditingController();
-  var txtFactor = new TextEditingController();
-  var txtMaxTrys = new TextEditingController();
-  var txtPlayers = new TextEditingController();
-  var txtTime = new TextEditingController();
-  var txtTimeDistribution = new TextEditingController();
-  var txtTimeElection = new TextEditingController();
-  var txtStable = new TextEditingController();
-  var txtLimiteVotes = new TextEditingController();
-  var txtSuspended = new TextEditingController();
-  var txtContributionVariation = new TextEditingController();
-  var txtDistributionVariation = new TextEditingController();
-  var txtUnfairDistribution = new TextEditingController();
   // var maskFormatter =
   //     MaskTextInputFormatter(mask: '###', filter: {"#": RegExp(r'[0-9]')});
 
@@ -84,9 +81,12 @@ class _CreateGameState extends State<CreateGame> {
   }
 
   List<GameVariable> variables = [
-    GameVariable("String", "", TextEditingController(text: ""))
+    GameVariable("String", TextEditingController(text: ""),
+        TextEditingController(text: ""))
   ];
   List<Widget> grid = [];
+  var txtGameName = TextEditingController(text: "");
+  var txtGameDesc = TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
@@ -104,49 +104,50 @@ class _CreateGameState extends State<CreateGame> {
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                        padding: const EdgeInsets.all(10),
-                        // child: GridView.count(
-                        //     padding: const EdgeInsets.all(20),
-                        //     shrinkWrap: true,
-                        //     crossAxisSpacing: 30,
-                        //     mainAxisSpacing: 3.0,
-                        //     crossAxisCount: 3,
-                        //     childAspectRatio: 7,
-                        //     children:
-                        child: ListView(children: [...grid]
-                            /*[
-                              DropDownField(
-                                labelText: "Tipo",
-                                // AppLocalizations.of(context)
-                                //  .translate('electionRule'),
-                                value: type,
-                                items: types,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    type = newValue!;
-                                  });
-                                },
-                              ),
-                              TextFormField(
-                                controller: txtExperimentName,
-                                decoration: setDecoration(
-                                  "Nome",
+                      padding: const EdgeInsets.all(10),
+                      // child: GridView.count(
+                      //     padding: const EdgeInsets.all(20),
+                      //     shrinkWrap: true,
+                      //     crossAxisSpacing: 30,
+                      //     mainAxisSpacing: 3.0,
+                      //     crossAxisCount: 3,
+                      //     childAspectRatio: 7,
+                      //     children:
+                      child: ListView(children: [...grid]
+                          /*[
+                                DropDownField(
+                                  labelText: "Tipo",
                                   // AppLocalizations.of(context)
-                                  //     .translate('experimentName')
+                                  //  .translate('electionRule'),
+                                  value: type,
+                                  items: types,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      type = newValue!;
+                                    });
+                                  },
                                 ),
-                                keyboardType: TextInputType.number,
-                                maxLength: 100,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "erro";
-                                    //AppLocalizations.of(context)
-                                    //  .translate('Required field');
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ]*/
-                            )),
+                                TextFormField(
+                                  controller: txtExperimentName,
+                                  decoration: setDecoration(
+                                    "Nome",
+                                    // AppLocalizations.of(context)
+                                    //     .translate('experimentName')
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 100,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "erro";
+                                      //AppLocalizations.of(context)
+                                      //  .translate('Required field');
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ]*/
+                          ),
+                    ),
                     // ),
                   ),
                   ElevatedButton(
@@ -157,22 +158,124 @@ class _CreateGameState extends State<CreateGame> {
                         style: TextStyle(fontSize: 30),
                       ),
                     ),
-                    onPressed: () {
-                      print('Pressed');
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        debugPrint('Pressed');
+                        var json = "";
+                        variables.forEach((element) {
+                          if (element == variables.first) {
+                            json += "{ ";
+                          }
+                          json +=
+                              """ "${element.txtName.text}" : "${element.type}" """;
+                          if (element != variables.last)
+                            json += ", ";
+                          else
+                            json += "} ";
+                        });
+                        var defaultParameters = "";
+                        variables.forEach((element) {
+                          if (element == variables.first) {
+                            defaultParameters += "{ ";
+                          }
+                          defaultParameters +=
+                              """ "${element.txtName.text}" : "${element.txtDefault.text}" """;
+                          if (element != variables.last)
+                            defaultParameters += ", ";
+                          else
+                            defaultParameters += "} ";
+                        });
+                        debugPrint("txtGameName: " + txtGameName.text);
+                        debugPrint("desc: " + txtGameDesc.text);
+                        String txt = await Database.createGame(
+                          game: Game(
+                            txtGameName.text,
+                            txtGameDesc.text,
+                            "creator",
+                            // {"a": "String"},
+                            jsonDecode(json),
+                            // jsonDecode(json),
+                            jsonDecode(defaultParameters),
+                          ),
+                        );
+                        await Dialogs.okDialog(
+                          txt,
+                          context,
+                        );
+                      }
                     },
                   ),
                 ])));
   }
 
   addVariable() {
-    variables.add(GameVariable("String", "", TextEditingController()));
+    variables.add(GameVariable(
+        "String", TextEditingController(text: ""), TextEditingController()));
     getVariables();
   }
 
   getVariables() {
     print(variables.length);
     print(grid.length);
-    grid = [];
+    grid = [
+      Flex(
+        direction: Axis.horizontal,
+        children: [
+          Expanded(
+              child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: TextFormField(
+                    controller: txtGameName,
+                    decoration: setDecoration(
+                      "Nome do Jogo",
+                      // AppLocalizations.of(context)
+                      //     .translate('experimentName')
+                    ),
+                    keyboardType: TextInputType.text,
+                    maxLength: 100,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return AppLocalizations.of(context)
+                            .translate('Required field');
+                      }
+                      return null;
+                    },
+                  ))),
+        ],
+      ),
+      Flex(
+        direction: Axis.horizontal,
+        children: [
+          Expanded(
+              child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: TextFormField(
+                    controller: txtGameDesc,
+                    decoration: setDecoration(
+                      "Descrição",
+                      // AppLocalizations.of(context)
+                      //     .translate('experimentName')
+                    ),
+                    keyboardType: TextInputType.text,
+                    maxLength: 100,
+                    maxLines: 2,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return AppLocalizations.of(context)
+                            .translate('Required field');
+                      }
+                      return null;
+                    },
+                  ))),
+        ],
+      ),
+      const Padding(
+          padding: EdgeInsets.only(bottom: 10, left: 10),
+          child: Text(
+            "Variaveis",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ))
+    ];
     variables.forEach((element) {
       grid.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -213,9 +316,30 @@ class _CreateGameState extends State<CreateGame> {
                   maxLength: 100,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "erro";
-                      //AppLocalizations.of(context)
-                      //  .translate('Required field');
+                      return AppLocalizations.of(context)
+                          .translate('Required field');
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: element.txtDefault,
+                  decoration: setDecoration(
+                    "Valor padrão",
+                    // AppLocalizations.of(context)
+                    //     .translate('experimentName')
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: 100,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return AppLocalizations.of(context)
+                          .translate('Required field');
                     }
                     return null;
                   },
