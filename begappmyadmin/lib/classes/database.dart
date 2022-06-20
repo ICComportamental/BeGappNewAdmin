@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Database {
   // static const defaultUrl = "https://localhost:44370/api/v1/";
-  var defaultUrl = "https://api.begapp.com.br/api/v1/";
+  static const defaultUrl = "https://api.begapp.com.br/api/v1/";
 
   static getToken() async {
     localStorage = await SharedPreferences.getInstance();
