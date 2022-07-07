@@ -1,6 +1,8 @@
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/modals/createGame.dart';
+import 'package:begappmyadmin/modals/CreateExperiment.dart';
+import 'package:begappmyadmin/modals/updateGame.dart';
 import 'package:flutter/material.dart';
 
 class Dialogs {
@@ -13,6 +15,32 @@ class Dialogs {
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: CreateGame());
+    await showDialog(
+        context: context, builder: (BuildContext context) => createGameDialog);
+  }
+
+  static showUpdateGame(context, Game game) async {
+    // var snap = await Database.getPublicGoodsExperiment('default');
+    // Game experiment = Game.fromJson(snap[0]);
+
+    Dialog createGameDialog = Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: UpdateGame(game));
+    await showDialog(
+        context: context, builder: (BuildContext context) => createGameDialog);
+  }
+
+  static showCreateExperiment(context, Game game) async {
+    // var snap = await Database.getPublicGoodsExperiment('default');
+    // Game experiment = Game.fromJson(snap[0]);
+
+    Dialog createGameDialog = Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: CreateExperiment(game));
     await showDialog(
         context: context, builder: (BuildContext context) => createGameDialog);
   }

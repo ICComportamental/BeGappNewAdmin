@@ -2,30 +2,33 @@ import 'package:begappmyadmin/classes/myconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class Game {
+class Experiment {
   String id;
-  String name;
+  String gameId;
   String description;
   String creator;
   Map parameters;
-  Map defaultParameters;
+  bool isConfigsPublic;
+  bool isResultsPublic;
 
-  Game(
+  Experiment(
     this.id,
-    this.name,
+    this.gameId,
     this.description,
     this.creator,
     this.parameters,
-    this.defaultParameters,
+    this.isConfigsPublic,
+    this.isResultsPublic,
   );
-  factory Game.fromJson(dynamic json) {
-    return Game(
+  factory Experiment.fromJson(dynamic json) {
+    return Experiment(
       json['id'] as String,
-      json['name'] as String,
+      json['gameId'] as String,
       json['description'] as String,
       json['creator'] as String,
       json['parameters'],
-      json['defaultParameters'],
+      json['isConfigsPublic'] as bool,
+      json['isResultsPublic'] as bool,
     );
   }
   // Map<String, dynamic> toJson() => _$GameToJson(this);

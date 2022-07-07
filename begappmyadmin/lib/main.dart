@@ -3,12 +3,14 @@ import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/login/pages/ResetPassword.page.dart';
 import 'package:begappmyadmin/login/pages/confirmAccount.dart';
 import 'package:begappmyadmin/login/pages/login.page.dart';
+import 'package:begappmyadmin/pages/games.page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login/pages/forgotPasswordSendEmail.page.dart';
+import 'pages/experiments.page.dart';
 import 'pages/home.page.dart';
 
 void main() async {
@@ -51,10 +53,13 @@ late SharedPreferences localStorage;
 TextEditingController username =
     new TextEditingController(text: "yasmin.carolina12@gmail.com");
 TextEditingController password = new TextEditingController(text: "1234");
+String gameId =
+    ""; //id do jogo de onde provem os experimentos na pagina da tabela dos experiments
 
 class MyApp extends StatefulWidget {
   static Future init() async {
     localStorage = await SharedPreferences.getInstance();
+    localStorage.setString("gameId", "");
   }
 
   final AppLanguage appLanguage;
@@ -74,17 +79,19 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V3 - create game");
+    print("V4 - edit game - see experiments");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
-            initialRoute: "/homepage",
+            initialRoute: "/GamesPage",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.
-              '/homepage': (context) => HomePage(),
-              '/login': (context) => LoginPage(),
+              HomePage.routeName: (context) => HomePage(),
+              GamesPage.routeName: (context) => const GamesPage(),
+              // ExperimentsPage.routeName: (context) => ExperimentsPage(),
+              LoginPage.routeName: (context) => LoginPage(),
               '/confirm-account': (context) => ConfirmAccount(
                     myurl: widget.myurl,
                     userEmail: widget.userEmail,
@@ -131,7 +138,7 @@ class _MyAppState extends State<MyApp> {
             },*/
             title: 'BeGapp',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              primarySwatch: Colors.purple,
             ),
             // home: LoginPage()
             // const MyHomePage(title: 'Flutter Demo Home Page'),

@@ -2,6 +2,11 @@ class MyConverter {
   static int stringToInt(String number) => int.parse(number);
   static String stringFromInt(int number) => number.toString();
 
+  static Map stringToMap(dynamic json) {
+    return json['parameters'];
+  }
+  // static String stringFromMap(int json) => number.toString();
+
   static Duration stringToDuration(String s) {
     // if(s == null) return null;
     int hours = 0;

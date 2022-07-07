@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/login/classes/requestUserAdmin.dart';
 import 'package:begappmyadmin/main.dart';
@@ -160,5 +161,103 @@ class Database {
     final message = json['message'];
     //debugPrint(message);
     return message;
+  }
+
+  static updateGame({
+    required Game game,
+  }) async {
+    debugPrint(jsonEncode({
+      "GameId": game.id,
+      "Name": game.name,
+      "Description": game.description,
+      "parameters": game.parameters,
+      "DefaultParameters": game.defaultParameters
+    }));
+    String url = defaultUrl + "Games";
+    String token = await getToken();
+    var res = await http.patch(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "GameId": game.id,
+          "Name": game.name,
+          "Description": game.description,
+          "parameters": game.parameters,
+          "DefaultParameters": game.defaultParameters
+        }));
+    String body = res.body;
+    var json = jsonDecode(body);
+    //final message = json['message'];
+    //debugPrint(message);
+    return body;
+  }
+
+  static createExperiment({
+    required Experiment experiment,
+  }) async {
+    debugPrint(jsonEncode({
+      "GameId": experiment.gameId,
+      "Description": experiment.description,
+      "parameters": experiment.parameters,
+      "IsResultsPublic": experiment.isResultsPublic,
+      "IsConfigsPublic": experiment.isConfigsPublic,
+    }));
+    String url = defaultUrl + "Experiments";
+    String token = await getToken();
+    var res = await http.post(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "GameId": experiment.gameId,
+          "Description": experiment.description,
+          "parameters": experiment.parameters,
+          "IsResultsPublic": experiment.isResultsPublic,
+          "IsConfigsPublic": experiment.isConfigsPublic,
+        }));
+    String body = res.body;
+    var json = jsonDecode(body);
+    //final message = json['message'];
+    //debugPrint(message);
+    return body;
+  }
+
+  static getGames() async {
+    String url = defaultUrl + "Games";
+    String token = await getToken();
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+    );
+    String body = res.body;
+    debugPrint(body);
+    return jsonDecode(body) as List;
+  }
+
+  static getExperiments(String gameId) async {
+    print("GMAEID: " + localStorage.getString('gameId')!);
+    localStorage = await SharedPreferences.getInstance();
+
+    String url = defaultUrl + "Experiments";
+    String token = await getToken();
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        "GameId": gameId
+        //localStorage.getString('gameId')! //gameId, //"620a9710c66231230648bd41"
+      },
+    );
+    debugPrint(res.body);
+    String body = res.body;
+
+    return jsonDecode(body) as List;
   }
 }

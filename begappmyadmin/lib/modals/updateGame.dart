@@ -10,17 +10,16 @@ import 'package:flutter/services.dart';
 import '../forms/DropDownField.dart';
 import '../classes/variable.dart';
 
-class CreateGame extends StatefulWidget {
+class UpdateGame extends StatefulWidget {
   static const routeName = '/Create_Game';
 
-  const CreateGame({
-    Key? key,
-  }) : super(key: key);
+  Game game;
+  UpdateGame(this.game);
   @override
-  _CreateGameState createState() => _CreateGameState();
+  _UpdateGameState createState() => _UpdateGameState();
 }
 
-class _CreateGameState extends State<CreateGame> {
+class _UpdateGameState extends State<UpdateGame> {
   late Game defaultVariables;
   final _formKey = GlobalKey<FormState>();
   List<String> electionRules = [
@@ -76,14 +75,25 @@ class _CreateGameState extends State<CreateGame> {
 
   @override
   void initState() {
+    txtGameName.text = widget.game.name;
+    txtGameDesc.text = widget.game.description;
+    widget.game.parameters.forEach((key, value) {
+      print("value:" + key);
+      int i = widget.game.parameters.keys.toList().indexOf(key);
+      String defaulfPar = "";
+      widget.game.defaultParameters.entries.forEach((element) {
+        print("ELEMENT:" + element.value);
+        if (element.key == key) defaulfPar = element.value;
+      });
+      variables.add(GameVariable(value, TextEditingController(text: key),
+          TextEditingController(text: defaulfPar)));
+    });
+
     getVariables();
     super.initState();
   }
 
-  List<GameVariable> variables = [
-    GameVariable("String", TextEditingController(text: ""),
-        TextEditingController(text: ""))
-  ];
+  List<GameVariable> variables = [];
   List<Widget> grid = [];
   var txtGameName = TextEditingController(text: "");
   var txtGameDesc = TextEditingController(text: "");
@@ -187,22 +197,19 @@ class _CreateGameState extends State<CreateGame> {
                         });
                         debugPrint("txtGameName: " + txtGameName.text);
                         debugPrint("desc: " + txtGameDesc.text);
-                        String txt = await Database.createGame(
+                        String txt = await Database.updateGame(
                           game: Game(
-                            "",
+                            widget.game.id,
                             txtGameName.text,
                             txtGameDesc.text,
-                            "",
-                            // {"a": "String"},
+                            widget.game.creator,
                             jsonDecode(json),
-                            // jsonDecode(json),
                             jsonDecode(defaultParameters),
                           ),
                         );
-                        await Dialogs.okDialog(
-                          txt,
-                          context,
-                        );
+                        await Dialogs.okDialog(txt, context, onPop: () {
+                          Navigator.pushNamed(context, "/GamesPage");
+                        });
                       }
                     },
                   ),

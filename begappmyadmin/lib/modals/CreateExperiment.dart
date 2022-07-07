@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/database.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
+import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,25 +11,21 @@ import 'package:flutter/services.dart';
 import '../forms/DropDownField.dart';
 import '../classes/variable.dart';
 
-class CreateGame extends StatefulWidget {
+class CreateExperiment extends StatefulWidget {
   static const routeName = '/Create_Game';
 
-  const CreateGame({
-    Key? key,
-  }) : super(key: key);
+  Game game;
+  CreateExperiment(this.game);
   @override
-  _CreateGameState createState() => _CreateGameState();
+  _CreateExperimentState createState() => _CreateExperimentState();
 }
 
-class _CreateGameState extends State<CreateGame> {
+class _CreateExperimentState extends State<CreateExperiment> {
   late Game defaultVariables;
   final _formKey = GlobalKey<FormState>();
-  List<String> electionRules = [
-    "intermittent election disabled",
-    "intermittent election enabled",
-    "recurring election disabled",
-    "recurring election enabled"
-  ];
+  bool isResultsPublic = false;
+  bool isConfigsPublic = false;
+
   // List<String> types = ["int", "String", "Double", "Float", "bool"];
   List<String> types = [
     "String",
@@ -55,7 +52,7 @@ class _CreateGameState extends State<CreateGame> {
         counterText: "",
         labelText: label,
         labelStyle: TextStyle(fontSize: labelSize),
-        border: const OutlineInputBorder(
+        border: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blueGrey),
           borderRadius: BorderRadius.all(
             Radius.circular(10.0),
@@ -76,14 +73,25 @@ class _CreateGameState extends State<CreateGame> {
 
   @override
   void initState() {
+    txtGameName.text = widget.game.name;
+    txtGameDesc.text = widget.game.description;
+    widget.game.parameters.forEach((key, value) {
+      print("value:" + key);
+      int i = widget.game.parameters.keys.toList().indexOf(key);
+      String defaulfPar = "";
+      widget.game.defaultParameters.entries.forEach((element) {
+        print("ELEMENT:" + element.value);
+        if (element.key == key) defaulfPar = element.value;
+      });
+      variables.add(GameVariable(value, TextEditingController(text: key),
+          TextEditingController(text: defaulfPar)));
+    });
+
     getVariables();
     super.initState();
   }
 
-  List<GameVariable> variables = [
-    GameVariable("String", TextEditingController(text: ""),
-        TextEditingController(text: ""))
-  ];
+  List<GameVariable> variables = [];
   List<Widget> grid = [];
   var txtGameName = TextEditingController(text: "");
   var txtGameDesc = TextEditingController(text: "");
@@ -95,7 +103,7 @@ class _CreateGameState extends State<CreateGame> {
 
     return Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
         child: Form(
             key: _formKey,
             child: Flex(
@@ -104,9 +112,9 @@ class _CreateGameState extends State<CreateGame> {
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
                       // child: GridView.count(
-                      //     padding: const EdgeInsets.all(20),
+                      //     padding:  EdgeInsets.all(20),
                       //     shrinkWrap: true,
                       //     crossAxisSpacing: 30,
                       //     mainAxisSpacing: 3.0,
@@ -151,7 +159,7 @@ class _CreateGameState extends State<CreateGame> {
                     // ),
                   ),
                   ElevatedButton(
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.all(8),
                       child: Text(
                         'Confirmar',
@@ -187,22 +195,20 @@ class _CreateGameState extends State<CreateGame> {
                         });
                         debugPrint("txtGameName: " + txtGameName.text);
                         debugPrint("desc: " + txtGameDesc.text);
-                        String txt = await Database.createGame(
-                          game: Game(
+                        String txt = await Database.createExperiment(
+                          experiment: Experiment(
                             "",
-                            txtGameName.text,
-                            txtGameDesc.text,
-                            "",
-                            // {"a": "String"},
-                            jsonDecode(json),
-                            // jsonDecode(json),
+                            widget.game.id,
+                            widget.game.description,
+                            widget.game.creator,
                             jsonDecode(defaultParameters),
+                            isConfigsPublic,
+                            isResultsPublic,
                           ),
                         );
-                        await Dialogs.okDialog(
-                          txt,
-                          context,
-                        );
+                        await Dialogs.okDialog(txt, context, onPop: () {
+                          Navigator.pushNamed(context, "/GamesPage");
+                        });
                       }
                     },
                   ),
@@ -224,32 +230,7 @@ class _CreateGameState extends State<CreateGame> {
         children: [
           Expanded(
               child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: TextFormField(
-                    controller: txtGameName,
-                    decoration: setDecoration(
-                      "Nome do Jogo",
-                      // AppLocalizations.of(context)
-                      //     .translate('experimentName')
-                    ),
-                    keyboardType: TextInputType.text,
-                    maxLength: 100,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)
-                            .translate('Required field');
-                      }
-                      return null;
-                    },
-                  ))),
-        ],
-      ),
-      Flex(
-        direction: Axis.horizontal,
-        children: [
-          Expanded(
-              child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   child: TextFormField(
                     controller: txtGameDesc,
                     decoration: setDecoration(
@@ -270,8 +251,52 @@ class _CreateGameState extends State<CreateGame> {
                   ))),
         ],
       ),
-      const Padding(
-          padding: EdgeInsets.only(bottom: 10, left: 10),
+      Flex(
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: isConfigsPublic,
+                  onChanged: (value) {
+                    print(isConfigsPublic);
+                    isConfigsPublic = !isConfigsPublic;
+                    getVariables();
+                    setState(() {});
+                  },
+                ),
+                Text(
+                  "Variaveis públicas",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: isResultsPublic,
+                  onChanged: (bool? value) {
+                    isResultsPublic = !isResultsPublic;
+                    getVariables();
+                    setState(() {});
+                  },
+                ),
+                Text(
+                  "Resultados públicas",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+      Padding(
+          padding: EdgeInsets.only(bottom: 10, left: 10, top: 20),
           child: Text(
             "Variaveis",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -279,59 +304,59 @@ class _CreateGameState extends State<CreateGame> {
     ];
     variables.forEach((element) {
       grid.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Flex(
           direction: Axis.horizontal,
           children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: DropDownField(
-                  labelText: "Tipo",
-                  // AppLocalizations.of(context)
-                  //  .translate('electionRule'),
-                  value: element.type,
-                  items: types,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      element.type = newValue!;
-                    });
-                  },
-                ),
-              ),
-            ),
+            // Expanded(
+            //   child: Container(
+            //     padding: EdgeInsets.all(10),
+            //     child: DropDownField(
+            //       labelText: "Tipo",
+            //       // AppLocalizations.of(context)
+            //       //  .translate('electionRule'),
+            //       value: element.type,
+            //       items: types,
+            //       onChanged: (String? newValue) {
+            //         setState(() {
+            //           element.type = newValue!;
+            //         });
+            //       },
+            //     ),
+            //   ),
+            // ),
 
             // );
             // grid.add(
+            // Expanded(
+            //   child: Container(
+            //     padding: EdgeInsets.all(10),
+            //     child: TextFormField(
+            //       controller: element.txtName,
+            //       decoration: setDecoration(
+            //         "Nome",
+            //         // AppLocalizations.of(context)
+            //         //     .translate('experimentName')
+            //       ),
+            //       keyboardType: TextInputType.number,
+            //       maxLength: 100,
+            //       validator: (value) {
+            //         if (value!.isEmpty) {
+            //           return AppLocalizations.of(context)
+            //               .translate('Required field');
+            //         }
+            //         return null;
+            //       },
+            //     ),
+            //   ),
+            // ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: element.txtName,
-                  decoration: setDecoration(
-                    "Nome",
-                    // AppLocalizations.of(context)
-                    //     .translate('experimentName')
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLength: 100,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return AppLocalizations.of(context)
-                          .translate('Required field');
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 child: TextFormField(
                   controller: element.txtDefault,
                   decoration: setDecoration(
-                    "Valor padrão",
+                    "${element.txtName.text}(${element.type})",
                     // AppLocalizations.of(context)
                     //     .translate('experimentName')
                   ),
@@ -347,36 +372,36 @@ class _CreateGameState extends State<CreateGame> {
                 ),
               ),
             ),
-            ElevatedButton(
-              child: const Text(
-                '-',
-                style: TextStyle(fontSize: 30),
-              ),
-              onPressed: () async {
-                variables.remove(element);
-                getVariables();
-                setState(() {});
-              },
-            ),
+            // ElevatedButton(
+            //   child: Text(
+            //     '-',
+            //     style: TextStyle(fontSize: 30),
+            //   ),
+            //   onPressed: () async {
+            //     variables.remove(element);
+            //     getVariables();
+            //     setState(() {});
+            //   },
+            // ),
           ],
         ),
       ));
     });
-    grid.add(
-      Container(
-        alignment: Alignment.bottomRight,
-        padding: const EdgeInsets.only(right: 20),
-        child: ElevatedButton(
-          child: const Text(
-            '+',
-            style: TextStyle(fontSize: 30),
-          ),
-          onPressed: () async {
-            addVariable();
-            setState(() {});
-          },
-        ),
-      ),
-    );
+    // grid.add(
+    //   Container(
+    //     alignment: Alignment.bottomRight,
+    //     padding: EdgeInsets.only(right: 20),
+    //     child: ElevatedButton(
+    //       child: Text(
+    //         '+',
+    //         style: TextStyle(fontSize: 30),
+    //       ),
+    //       onPressed: () async {
+    //         addVariable();
+    //         setState(() {});
+    //       },
+    //     ),
+    //   ),
+    // );
   }
 }

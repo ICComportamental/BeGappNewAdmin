@@ -18,6 +18,9 @@
     "resetPassword":"Recuperação de Senha",
     "infoEmail":"Informe o email vinculado a conta",
     "check your email":"Verifique o seu email para prosseguir",
-    "confirm":"Confirmar"
+    "confirm":"Confirmar",
+
+    "noResults":"Sem Resultados",
+    "filter":"Filtro"
 
 }

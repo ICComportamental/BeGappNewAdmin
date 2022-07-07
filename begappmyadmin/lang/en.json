@@ -18,7 +18,11 @@
     "resetPassword":"Reset Password",
     "infoEmail":"Enter the email linked to the account",
     "check your email":"Check your email",
-    "confirm":"Confirm"
+    "confirm":"Confirm",
+
+    "noResults":"No Results",
+    "filter":"Filter"
+
 
 
 }

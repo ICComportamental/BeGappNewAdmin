@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 
 class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -32,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
 
   //salvar login
   save() async {
+    await MyApp.init();
+
     localStorage.setString('username', username.text.toString());
     localStorage.setBool('login', true);
   }
@@ -50,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(
         _keyLoader.currentContext!,
       ).pop();
+      Navigator.pushNamed(context, "/HomePage");
       // adminUser = AdminUser.fromJson(jsonList[0]);
       // localStorage.setString('userType', adminUser.userType);
       // Navigator.push(context,
@@ -96,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
       //   Database.validateLogin("yasmin.carolina12@gmail.com", "1234");
       // })),
       body: Container(
-          color: Colors.blue,
+          color: Colors.purple[800],
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(
               horizontal: width / 3, vertical: height / 10),
@@ -193,7 +198,8 @@ class _LoginPageState extends State<LoginPage> {
                                         child: Text(
                                           AppLocalizations.of(context)
                                               .translate('forgotPassword'),
-                                          style: TextStyle(color: Colors.blue),
+                                          style:
+                                              TextStyle(color: Colors.purple),
                                           textAlign: TextAlign.left,
                                         ),
                                         onTap: () {
@@ -214,6 +220,12 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.blue,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 201, 148, 231),
+                                    Color.fromARGB(255, 72, 46, 165),
+                                  ],
+                                ),
                               ),
                               child: TextButton(
                                   child: Text("Login",
