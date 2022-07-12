@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Database {
-  // static const defaultUrl = "https://localhost:44370/api/v1/";
-  static const defaultUrl = "https://api.begapp.com.br/api/v1/";
+  static const defaultUrl = "https://localhost:44370/api/v1/";
+  // static const defaultUrl = "https://api.begapp.com.br/api/v1/";
 
   static getToken() async {
     localStorage = await SharedPreferences.getInstance();
@@ -223,6 +223,39 @@ class Database {
     //final message = json['message'];
     //debugPrint(message);
     return body;
+  }
+
+  static updateExperiment({
+    required Experiment experiment,
+  }) async {
+    debugPrint(jsonEncode({
+      "experimentId": experiment.id,
+      "GameId": experiment.gameId,
+      "Description": experiment.description,
+      "parameters": experiment.parameters,
+      "IsResultsPublic": experiment.isResultsPublic,
+      "IsConfigsPublic": experiment.isConfigsPublic,
+    }));
+    String url = defaultUrl + "Experiments";
+    String token = await getToken();
+    var res = await http.patch(Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "experimentId": experiment.id,
+          "GameId": experiment.gameId,
+          "Description": experiment.description,
+          "parameters": experiment.parameters,
+          "IsResultsPublic": experiment.isResultsPublic,
+          "IsConfigsPublic": experiment.isConfigsPublic,
+        }));
+    String body = res.body;
+    var json = jsonDecode(body);
+    final message = json['message'];
+    //debugPrint(message);
+    return message;
   }
 
   static getGames() async {

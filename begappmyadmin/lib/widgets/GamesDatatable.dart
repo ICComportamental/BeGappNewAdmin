@@ -97,7 +97,7 @@ class _GamesTableState extends State<GamesTable> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ExperimentsPage(gameId: games[i].id)));
+                                ExperimentsPage(game: games[i])));
                   },
                 ),
               ),

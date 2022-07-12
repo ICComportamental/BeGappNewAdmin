@@ -1,5 +1,6 @@
 import 'package:begappmyadmin/classes/database.dart';
 import 'package:begappmyadmin/classes/experiment.dart';
+import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/main.dart';
 import 'package:begappmyadmin/widgets/ExperimentsDatatable.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +8,10 @@ import 'package:flutter/material.dart';
 import '../widgets/FutureCheckLogin.dart';
 
 class ExperimentsPage extends StatefulWidget {
-  String? gameId;
+  Game game;
   // static const routeName = '/ExperimentsPage';
 
-  ExperimentsPage({required this.gameId});
+  ExperimentsPage({required this.game});
   // ExperimentsPage();
 
   @override
@@ -31,7 +32,7 @@ class _ExperimentsPageState extends State<ExperimentsPage> {
     // print("GAMEID:${widget.gameId}");
     return FutureCheckLogin(
         page: FutureBuilder(
-            future: Database.getExperiments(widget.gameId!),
+            future: Database.getExperiments(widget.game.id),
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -55,7 +56,7 @@ class _ExperimentsPageState extends State<ExperimentsPage> {
               // print(experiments[0].description);
 
               return Container(
-                child: ExperimentsTable(experiments),
+                child: ExperimentsTable(experiments, widget.game),
               );
               // return const Center(
               //   child: CircularProgressIndicator(),

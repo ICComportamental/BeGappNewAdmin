@@ -1,15 +1,14 @@
-import 'package:begappmyadmin/DatatableElements/TableRows/datatableRows.dart';
 import 'package:begappmyadmin/DatatableElements/pagedTable.dart';
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
 import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
-import 'package:begappmyadmin/widgets/customDatatable.dart';
 import 'package:flutter/material.dart';
 
 class ExperimentsTable extends StatefulWidget {
   List<Experiment> experiments;
-  ExperimentsTable(this.experiments);
+  Game game;
+  ExperimentsTable(this.experiments, this.game);
 
   @override
   State<ExperimentsTable> createState() => _ExperimentsTableState();
@@ -66,7 +65,8 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
           InkWell(
             child: Icon(Icons.edit),
             onTap: () async {
-              //  await Dialogs.showUpdateGame(context, experiments[i]);
+              await Dialogs.showUpdateExperiment(
+                  context, experiments[i], widget.game.parameters);
               setState(() {});
             },
           ),

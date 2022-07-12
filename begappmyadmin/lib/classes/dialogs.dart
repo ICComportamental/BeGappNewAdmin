@@ -1,5 +1,7 @@
 import 'package:begappmyadmin/app_localizations.dart';
+import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
+import 'package:begappmyadmin/modals/UpdateExperiment.dart';
 import 'package:begappmyadmin/modals/createGame.dart';
 import 'package:begappmyadmin/modals/CreateExperiment.dart';
 import 'package:begappmyadmin/modals/updateGame.dart';
@@ -7,9 +9,6 @@ import 'package:flutter/material.dart';
 
 class Dialogs {
   static showAddNewGame(context) async {
-    // var snap = await Database.getPublicGoodsExperiment('default');
-    // Game experiment = Game.fromJson(snap[0]);
-
     Dialog createGameDialog = Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -20,9 +19,6 @@ class Dialogs {
   }
 
   static showUpdateGame(context, Game game) async {
-    // var snap = await Database.getPublicGoodsExperiment('default');
-    // Game experiment = Game.fromJson(snap[0]);
-
     Dialog createGameDialog = Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -32,10 +28,19 @@ class Dialogs {
         context: context, builder: (BuildContext context) => createGameDialog);
   }
 
-  static showCreateExperiment(context, Game game) async {
-    // var snap = await Database.getPublicGoodsExperiment('default');
-    // Game experiment = Game.fromJson(snap[0]);
+  static showUpdateExperiment(
+      context, Experiment experiment, Map parameters) async {
+    Dialog updateExperimentDialog = Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: UpdateExperiment(experiment, parameters));
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => updateExperimentDialog);
+  }
 
+  static showCreateExperiment(context, Game game) async {
     Dialog createGameDialog = Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -46,9 +51,6 @@ class Dialogs {
   }
 
   static showRegisterUser(context) async {
-    // var snap = await Database.getPublicGoodsExperiment('default');
-    // Game experiment = Game.fromJson(snap[0]);
-
     showDialog(
         context: context,
         builder: (_) => AlertDialog(

@@ -21,12 +21,12 @@ class _FutureCheckLoginState extends State<FutureCheckLogin> {
         future: LoginSettings.isLogged(),
         builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
           if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Error fetching data future"),
             );
           }

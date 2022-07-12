@@ -47,7 +47,14 @@ class _PagedTableState extends State<PagedTable> {
               search: widget.search!,
             ),
           if (widget.search != null) space(),
-          if (widget.table != null) Center(child: widget.table),
+          if (widget.table != null)
+            Center(
+              child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1),
+                  ),
+                  child: widget.table),
+            ),
           space(),
           PagedTableButtons(
             next: widget.next,
