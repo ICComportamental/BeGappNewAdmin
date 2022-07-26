@@ -4,6 +4,7 @@ import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/database.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
 import 'package:begappmyadmin/classes/game.dart';
+import 'package:begappmyadmin/classes/resultsFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,14 +36,14 @@ class _UpdateGameState extends State<UpdateGame> {
     "UInt32",
     "Boolean",
     "Double",
-    "Decimal"
+    "Decimal",
   ];
 
   // String type = "String";
   bool electionAndDistribution = false;
-  bool showRounds = false;
   bool publicConfig = false;
   bool publicData = false;
+  bool participant = false;
   double labelSize = 0;
   int intLength = 11;
 
@@ -77,6 +78,7 @@ class _UpdateGameState extends State<UpdateGame> {
   void initState() {
     txtGameName.text = widget.game.name;
     txtGameDesc.text = widget.game.description;
+    participant = widget.game.participant;
     widget.game.parameters.forEach((key, value) {
       print("value:" + key);
       int i = widget.game.parameters.keys.toList().indexOf(key);
@@ -89,11 +91,21 @@ class _UpdateGameState extends State<UpdateGame> {
           TextEditingController(text: defaulfPar)));
     });
 
+    widget.game.resultsFormat.forEach(
+      (key, value) {
+        resultsFormats.add(ResultsFormat(
+          value,
+          TextEditingController(text: key),
+        ));
+      },
+    );
+
     getVariables();
     super.initState();
   }
 
   List<GameVariable> variables = [];
+  List<ResultsFormat> resultsFormats = [];
   List<Widget> grid = [];
   var txtGameName = TextEditingController(text: "");
   var txtGameDesc = TextEditingController(text: "");
@@ -195,16 +207,31 @@ class _UpdateGameState extends State<UpdateGame> {
                           else
                             defaultParameters += "} ";
                         });
+                        var results = "";
+                        resultsFormats.forEach((rf) {
+                          if (rf == resultsFormats.first) {
+                            results += "{ ";
+                          }
+                          results +=
+                              """ "${rf.txtName.text}" : "${rf.type}" """;
+                          if (rf != resultsFormats.last)
+                            results += ", ";
+                          else
+                            results += "} ";
+                        });
                         debugPrint("txtGameName: " + txtGameName.text);
                         debugPrint("desc: " + txtGameDesc.text);
+                        widget.game.participant = participant;
                         String txt = await Database.updateGame(
                           game: Game(
                             widget.game.id,
                             txtGameName.text,
                             txtGameDesc.text,
                             widget.game.creator,
+                            widget.game.participant,
                             jsonDecode(json),
                             jsonDecode(defaultParameters),
+                            jsonDecode(results),
                           ),
                         );
                         await Dialogs.okDialog(txt, context, onPop: () {
@@ -219,6 +246,14 @@ class _UpdateGameState extends State<UpdateGame> {
   addVariable() {
     variables.add(GameVariable(
         "String", TextEditingController(text: ""), TextEditingController()));
+    getVariables();
+  }
+
+  addResultFormat() {
+    resultsFormats.add(ResultsFormat(
+      "String",
+      TextEditingController(text: ""),
+    ));
     getVariables();
   }
 
@@ -275,6 +310,32 @@ class _UpdateGameState extends State<UpdateGame> {
                       return null;
                     },
                   ))),
+        ],
+      ),
+      Flex(
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: participant,
+                  onChanged: (bool? value) {
+                    participant = !participant;
+                    getVariables();
+                    setState(() {});
+                  },
+                ),
+                const Text(
+                  "Pegar informações padrão de participante (nome, email, idade)",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+          ),
         ],
       ),
       const Padding(
@@ -380,6 +441,97 @@ class _UpdateGameState extends State<UpdateGame> {
           ),
           onPressed: () async {
             addVariable();
+            setState(() {});
+          },
+        ),
+      ),
+    );
+    getResultsFormats();
+  }
+
+  getResultsFormats() {
+    grid.add(const Padding(
+        padding: EdgeInsets.only(bottom: 10, left: 10),
+        child: Text(
+          "Defina o Formato dos Resultados",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        )));
+
+    resultsFormats.forEach((rf) {
+      grid.add(Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Flex(
+          direction: Axis.horizontal,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: DropDownField(
+                  labelText: "Tipo",
+                  // AppLocalizations.of(context)
+                  //  .translate('electionRule'),
+                  value: rf.type,
+                  items: types,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      rf.type = newValue!;
+                    });
+                  },
+                ),
+              ),
+            ),
+
+            // );
+            // grid.add(
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: rf.txtName,
+                  decoration: setDecoration(
+                    "Nome",
+                    // AppLocalizations.of(context)
+                    //     .translate('experimentName')
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: 100,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return AppLocalizations.of(context)
+                          .translate('Required field');
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+
+            ElevatedButton(
+              child: const Text(
+                '-',
+                style: TextStyle(fontSize: 30),
+              ),
+              onPressed: () async {
+                resultsFormats.remove(rf);
+                getVariables();
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+      ));
+    });
+    grid.add(
+      Container(
+        alignment: Alignment.bottomRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: ElevatedButton(
+          child: const Text(
+            '+',
+            style: TextStyle(fontSize: 30),
+          ),
+          onPressed: () async {
+            addResultFormat();
             setState(() {});
           },
         ),

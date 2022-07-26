@@ -6,7 +6,10 @@ import 'package:begappmyadmin/login/classes/requestUserAdmin.dart';
 import 'package:begappmyadmin/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'NavigationService.dart';
 
 class Database {
   static const defaultUrl = "https://localhost:44370/api/v1/";
@@ -14,7 +17,55 @@ class Database {
 
   static getToken() async {
     localStorage = await SharedPreferences.getInstance();
-    return localStorage.getString('token');
+    String body = localStorage.getString('token')!;
+    dynamic json = jsonDecode(body);
+    return json['accessToken'];
+  }
+
+  static verifyToken() async {
+    localStorage = await SharedPreferences.getInstance();
+    String body = localStorage.getString('token')!;
+    dynamic json = jsonDecode(body);
+    DateTime dateTime = DateTime.parse(json['expiresAt']);
+    print(dateTime.isBefore(DateTime.now()));
+    return dateTime.isBefore(DateTime.now());
+    return json['expiresAt'];
+  }
+
+  static checkRefreshToken(Response res) async {
+    if (res.statusCode == 401) {
+      bool isExpired = await verifyToken();
+
+      if (!isExpired) {
+        refreshToken();
+      } else {
+        //encaminha usuario para o login
+        Navigator.pushReplacementNamed(
+            NavigationService.navigatorKey.currentContext!, "/login");
+      }
+    }
+  }
+
+  static refreshToken() async {
+    String fulltoken = await getToken();
+    dynamic decodedToken = jsonDecode(fulltoken);
+    String token = decodedToken['refreshToken'];
+    String url = defaultUrl + "auth" + "/$token";
+
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    String body = res.body;
+    var json = jsonDecode(body);
+    final message = json['accessToken'];
+    localStorage = await SharedPreferences.getInstance();
+    localStorage.setString('token', res.body);
+    debugPrint(message);
+
+    return res;
   }
 
   static validateLogin(String userEmail, String userPassword) async {
@@ -30,7 +81,7 @@ class Database {
     var json = jsonDecode(body);
     final message = json['accessToken'];
     localStorage = await SharedPreferences.getInstance();
-    localStorage.setString('token', json['accessToken']);
+    localStorage.setString('token', res.body);
     debugPrint(message);
     // var json = jsonDecode(body);
 
@@ -60,13 +111,6 @@ class Database {
         }));
     String body = res.body;
 
-    //print('${json.runtimeType} : $json');
-    // var errorsJson = json['errors'];
-
-    // Map<String, dynamic> data = json['errors'];
-    // debugPrint(errorsJson);
-    // final emailError = data['UserEmail'] as List;
-    // print(emailError);
     print("response: ${res.statusCode}");
     return res;
   }
@@ -141,7 +185,8 @@ class Database {
       "Name": game.name,
       "Description": game.description,
       "parameters": game.parameters,
-      "DefaultParameters": game.parameters
+      "DefaultParameters": game.parameters,
+      "ResultsFormat": game.resultsFormat
     }));
     String url = defaultUrl + "Games";
     String token = await getToken();
@@ -154,8 +199,10 @@ class Database {
           "Name": game.name,
           "Description": game.description,
           "parameters": game.parameters,
-          "DefaultParameters": game.defaultParameters
+          "DefaultParameters": game.defaultParameters,
+          "ResultsFormat": game.resultsFormat
         }));
+    checkRefreshToken(res);
     String body = res.body;
     var json = jsonDecode(body);
     final message = json['message'];
@@ -170,8 +217,10 @@ class Database {
       "GameId": game.id,
       "Name": game.name,
       "Description": game.description,
+      "Participant": game.participant,
       "parameters": game.parameters,
-      "DefaultParameters": game.defaultParameters
+      "DefaultParameters": game.defaultParameters,
+      "ResultsFormat": game.resultsFormat
     }));
     String url = defaultUrl + "Games";
     String token = await getToken();
@@ -184,14 +233,17 @@ class Database {
           "GameId": game.id,
           "Name": game.name,
           "Description": game.description,
+          "Participant": game.participant,
           "parameters": game.parameters,
-          "DefaultParameters": game.defaultParameters
+          "DefaultParameters": game.defaultParameters,
+          "ResultsFormat": game.resultsFormat
         }));
+    checkRefreshToken(res);
     String body = res.body;
     var json = jsonDecode(body);
     //final message = json['message'];
     //debugPrint(message);
-    return body;
+    return json['message'];
   }
 
   static createExperiment({
@@ -218,6 +270,7 @@ class Database {
           "IsResultsPublic": experiment.isResultsPublic,
           "IsConfigsPublic": experiment.isConfigsPublic,
         }));
+    checkRefreshToken(res);
     String body = res.body;
     var json = jsonDecode(body);
     //final message = json['message'];
@@ -251,6 +304,7 @@ class Database {
           "IsResultsPublic": experiment.isResultsPublic,
           "IsConfigsPublic": experiment.isConfigsPublic,
         }));
+    checkRefreshToken(res);
     String body = res.body;
     var json = jsonDecode(body);
     final message = json['message'];
@@ -268,6 +322,7 @@ class Database {
         "Authorization": "Bearer $token"
       },
     );
+    checkRefreshToken(res);
     String body = res.body;
     debugPrint(body);
     return jsonDecode(body) as List;
@@ -288,6 +343,7 @@ class Database {
         //localStorage.getString('gameId')! //gameId, //"620a9710c66231230648bd41"
       },
     );
+    checkRefreshToken(res);
     debugPrint(res.body);
     String body = res.body;
 

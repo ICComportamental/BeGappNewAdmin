@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'classes/NavigationService.dart';
 import 'login/pages/forgotPasswordSendEmail.page.dart';
 import 'pages/experiments.page.dart';
 import 'pages/home.page.dart';
@@ -85,6 +86,7 @@ class _MyAppState extends State<MyApp> {
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
+            navigatorKey: NavigationService.navigatorKey,
             initialRoute: "/GamesPage",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.

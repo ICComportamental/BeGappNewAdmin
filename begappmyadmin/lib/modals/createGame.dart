@@ -7,6 +7,7 @@ import 'package:begappmyadmin/classes/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../classes/resultsFormat.dart';
 import '../forms/DropDownField.dart';
 import '../classes/variable.dart';
 
@@ -84,9 +85,16 @@ class _CreateGameState extends State<CreateGame> {
     GameVariable("String", TextEditingController(text: ""),
         TextEditingController(text: ""))
   ];
+  List<ResultsFormat> resultsFormats = [
+    ResultsFormat(
+      "String",
+      TextEditingController(text: ""),
+    )
+  ];
   List<Widget> grid = [];
   var txtGameName = TextEditingController(text: "");
   var txtGameDesc = TextEditingController(text: "");
+  bool participant = false;
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +193,18 @@ class _CreateGameState extends State<CreateGame> {
                           else
                             defaultParameters += "} ";
                         });
+                        var results = "";
+                        resultsFormats.forEach((rf) {
+                          if (rf == resultsFormats.first) {
+                            results += "{ ";
+                          }
+                          results +=
+                              """ "${rf.txtName.text}" : "${rf.type}" """;
+                          if (rf != resultsFormats.last)
+                            results += ", ";
+                          else
+                            results += "} ";
+                        });
                         debugPrint("txtGameName: " + txtGameName.text);
                         debugPrint("desc: " + txtGameDesc.text);
                         String txt = await Database.createGame(
@@ -193,10 +213,12 @@ class _CreateGameState extends State<CreateGame> {
                             txtGameName.text,
                             txtGameDesc.text,
                             "",
+                            participant,
                             // {"a": "String"},
                             jsonDecode(json),
                             // jsonDecode(json),
                             jsonDecode(defaultParameters),
+                            jsonDecode(results),
                           ),
                         );
                         await Dialogs.okDialog(
@@ -212,6 +234,14 @@ class _CreateGameState extends State<CreateGame> {
   addVariable() {
     variables.add(GameVariable(
         "String", TextEditingController(text: ""), TextEditingController()));
+    getVariables();
+  }
+
+  addResultFormat() {
+    resultsFormats.add(ResultsFormat(
+      "String",
+      TextEditingController(text: ""),
+    ));
     getVariables();
   }
 
@@ -270,8 +300,34 @@ class _CreateGameState extends State<CreateGame> {
                   ))),
         ],
       ),
+      Flex(
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: participant,
+                  onChanged: (bool? value) {
+                    participant = !participant;
+                    getVariables();
+                    setState(() {});
+                  },
+                ),
+                const Text(
+                  "Pegar informações padrão de participante (nome, email, idade)",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
       const Padding(
-          padding: EdgeInsets.only(bottom: 10, left: 10),
+          padding: EdgeInsets.only(bottom: 10, left: 10, top: 10),
           child: Text(
             "Variaveis",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -373,6 +429,97 @@ class _CreateGameState extends State<CreateGame> {
           ),
           onPressed: () async {
             addVariable();
+            setState(() {});
+          },
+        ),
+      ),
+    );
+    getResultsFormats();
+  }
+
+  getResultsFormats() {
+    grid.add(const Padding(
+        padding: EdgeInsets.only(bottom: 10, left: 10),
+        child: Text(
+          "Defina o Formato dos Resultados",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        )));
+
+    resultsFormats.forEach((rf) {
+      grid.add(Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Flex(
+          direction: Axis.horizontal,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: DropDownField(
+                  labelText: "Tipo",
+                  // AppLocalizations.of(context)
+                  //  .translate('electionRule'),
+                  value: rf.type,
+                  items: types,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      rf.type = newValue!;
+                    });
+                  },
+                ),
+              ),
+            ),
+
+            // );
+            // grid.add(
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: rf.txtName,
+                  decoration: setDecoration(
+                    "Nome",
+                    // AppLocalizations.of(context)
+                    //     .translate('experimentName')
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: 100,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return AppLocalizations.of(context)
+                          .translate('Required field');
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+
+            ElevatedButton(
+              child: const Text(
+                '-',
+                style: TextStyle(fontSize: 30),
+              ),
+              onPressed: () async {
+                resultsFormats.remove(rf);
+                getVariables();
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+      ));
+    });
+    grid.add(
+      Container(
+        alignment: Alignment.bottomRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: ElevatedButton(
+          child: const Text(
+            '+',
+            style: TextStyle(fontSize: 30),
+          ),
+          onPressed: () async {
+            addResultFormat();
             setState(() {});
           },
         ),
