@@ -26,11 +26,16 @@ class _GamesPageState extends State<GamesPage> {
               );
             }
             if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                    "Error fetching data future:" + snapshot.error.toString()),
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             }
+            // if (snapshot.hasError) {
+            //   return Center(
+            //     child: Text(
+            //         "Error fetching data future:" + snapshot.error.toString()),
+            //   );
+            // }
 
             List snap = snapshot.data as List<dynamic>;
             List<Game> games = [];

@@ -349,4 +349,26 @@ class Database {
 
     return jsonDecode(body) as List;
   }
+
+  static getParticipants(String experimentId) async {
+    // print("ExperimentID: " + localStorage.getString('gameId')!);
+    localStorage = await SharedPreferences.getInstance();
+
+    String url = defaultUrl + "Participants";
+    String token = await getToken();
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        "ExperimentId": experimentId
+        //localStorage.getString('gameId')! //gameId, //"620a9710c66231230648bd41"
+      },
+    );
+    checkRefreshToken(res);
+    debugPrint(res.body);
+    String body = res.body;
+
+    return jsonDecode(body) as List;
+  }
 }

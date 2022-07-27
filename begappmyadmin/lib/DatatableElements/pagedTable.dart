@@ -53,7 +53,10 @@ class _PagedTableState extends State<PagedTable> {
                   decoration: BoxDecoration(
                     border: Border.all(width: 1),
                   ),
-                  child: widget.table),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: widget.table,
+                  )),
             ),
           space(),
           PagedTableButtons(
@@ -70,7 +73,7 @@ class _PagedTableState extends State<PagedTable> {
                   color: Theme.of(context).primaryColor,
                   border: Border.all(color: Colors.blueGrey),
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                    Radius.circular(10.0),
                   ),
                 ),
                 child: TextButton(

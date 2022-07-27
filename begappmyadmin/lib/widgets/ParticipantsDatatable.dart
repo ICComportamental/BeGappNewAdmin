@@ -3,28 +3,33 @@ import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
 import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
-import 'package:begappmyadmin/pages/participants.page.dart';
+import 'package:begappmyadmin/classes/participant.dart';
 import 'package:flutter/material.dart';
 
-class ExperimentsTable extends StatefulWidget {
-  List<Experiment> experiments;
-  Game game;
-  ExperimentsTable(this.experiments, this.game);
+class ParticipantsTable extends StatefulWidget {
+  List<Participant> participants;
+
+  ParticipantsTable(
+    this.participants,
+  );
 
   @override
-  State<ExperimentsTable> createState() => _ExperimentsTableState();
+  State<ParticipantsTable> createState() => _ParticipantsTableState();
 }
 
-class _ExperimentsTableState extends State<ExperimentsTable> {
-  List<Experiment> experimentsAll = [];
-  List<Experiment> experiments = [];
-  int nGames = 2;
+class _ParticipantsTableState extends State<ParticipantsTable> {
+  List<Participant> participantsAll = [];
+  List<Participant> participants = [];
+  int nParticipants = 5;
   int indexPage = 1;
   @override
   void initState() {
-    experimentsAll = widget.experiments;
-    experiments = experimentsAll.sublist(
-        0, nGames < experimentsAll.length ? nGames : experimentsAll.length);
+    participantsAll = widget.participants;
+    participants = participantsAll.sublist(
+        0,
+        nParticipants < participantsAll.length
+            ? nParticipants
+            : participantsAll.length);
     getColumns();
     getRows();
     super.initState();
@@ -44,49 +49,38 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
 
   getColumns() {
     columns.add(const DataColumn(label: Text('#')));
-    experiments.first.parameters.entries.forEach((element) {
-      columns.add(DataColumn(label: Text(element.key)));
-    });
-    columns.add(const DataColumn(label: Text('Editar Experimento')));
+    columns.add(const DataColumn(label: Text("Nome")));
+    columns.add(const DataColumn(label: Text("Email")));
+    columns.add(const DataColumn(label: Text("Idade")));
+    columns.add(const DataColumn(label: Text("Genêro")));
+
     columns.add(const DataColumn(label: Text('Listar Resultados')));
   }
 
   getRows() {
-    print("Games: ${experiments.length}");
-    print("Gamesall: ${experimentsAll.length}");
+    print("Games: ${participants.length}");
+    print("Gamesall: ${participantsAll.length}");
     rows = [];
-    for (var i = 0; i < experiments.length; i++) {
+    for (var i = 0; i < participants.length; i++) {
       List<DataCell> cells = [];
       cells.add(DataCell(
-          Text((experimentsAll.indexOf(experiments[i]) + 1).toString())));
-      experiments[i].parameters.entries.forEach((element) {
-        cells.add(DataCell(Text(element.value)));
-      });
-      cells.add(
-        DataCell(
-          InkWell(
-            child: Icon(Icons.edit),
-            onTap: () async {
-              await Dialogs.showUpdateExperiment(
-                  context, experiments[i], widget.game.parameters);
-              setState(() {});
-            },
-          ),
-        ),
-      );
+          Text((participantsAll.indexOf(participants[i]) + 1).toString())));
+      // participants[i].parameters.entries.forEach((element) {
+      //   cells.add(DataCell(Text(element.value)));
+      // });
+
+      cells.add(DataCell(Text(participants[i].name!)));
+      cells.add(DataCell(Text(participants[i].email!)));
+      cells.add(DataCell(Text(participants[i].age!)));
+      cells.add(DataCell(Text(participants[i].gender!)));
+
       cells.add(
         DataCell(
           InkWell(
             child: Icon(Icons.list),
             onTap: () async {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ParticipantsPage(
-                            experiment: experiments[i].id,
-                          )));
               // await Dialogs.showUpdateExperiment(
-              //     context, experiments[i], widget.game.parameters);
+              //     context, participants[i], widget.game.parameters);
               // setState(() {});
             },
           ),
@@ -174,23 +168,25 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
             rows: rows),
         previous: () {
           if (indexPage > 1) indexPage--;
-          experiments = experimentsAll.sublist(
-              (nGames * (indexPage - 1) > 0) ? nGames * (indexPage - 1) : 0,
-              (nGames * indexPage) < experimentsAll.length
-                  ? (nGames * indexPage)
-                  : experimentsAll.length);
+          participants = participantsAll.sublist(
+              (nParticipants * (indexPage - 1) > 0)
+                  ? nParticipants * (indexPage - 1)
+                  : 0,
+              (nParticipants * indexPage) < participantsAll.length
+                  ? (nParticipants * indexPage)
+                  : participantsAll.length);
 
           setState(() {
             getRows();
           });
         },
         next: () {
-          if ((nGames * indexPage) < experimentsAll.length) indexPage++;
-          experiments = experimentsAll.sublist(
-              nGames * (indexPage - 1),
-              (nGames * indexPage) < experimentsAll.length
-                  ? (nGames * indexPage)
-                  : experimentsAll.length);
+          if ((nParticipants * indexPage) < participantsAll.length) indexPage++;
+          participants = participantsAll.sublist(
+              nParticipants * (indexPage - 1),
+              (nParticipants * indexPage) < participantsAll.length
+                  ? (nParticipants * indexPage)
+                  : participantsAll.length);
 
           setState(() {
             getRows();
@@ -231,13 +227,13 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
                 onTap: () {
                   print("object");
                   if (indexPage > 1) indexPage--;
-                  experiments = experimentsAll.sublist(
-                      (nGames * (indexPage - 1) > 0)
-                          ? nGames * (indexPage - 1)
+                  participants = participantsAll.sublist(
+                      (nParticipants * (indexPage - 1) > 0)
+                          ? nParticipants * (indexPage - 1)
                           : 0,
-                      (nGames * indexPage) < experimentsAll.length
-                          ? (nGames * indexPage)
-                          : experimentsAll.length);
+                      (nParticipants * indexPage) < participantsAll.length
+                          ? (nParticipants * indexPage)
+                          : participantsAll.length);
 
                   setState(() {
                     getRows();
@@ -259,12 +255,13 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
               InkWell(
                 onTap: () {
                   print("object");
-                  if ((nGames * indexPage) < experimentsAll.length) indexPage++;
-                  experiments = experimentsAll.sublist(
-                      nGames * (indexPage - 1),
-                      (nGames * indexPage) < experimentsAll.length
-                          ? (nGames * indexPage)
-                          : experimentsAll.length);
+                  if ((nParticipants * indexPage) < participantsAll.length)
+                    indexPage++;
+                  participants = participantsAll.sublist(
+                      nParticipants * (indexPage - 1),
+                      (nParticipants * indexPage) < participantsAll.length
+                          ? (nParticipants * indexPage)
+                          : participantsAll.length);
 
                   setState(() {
                     getRows();
