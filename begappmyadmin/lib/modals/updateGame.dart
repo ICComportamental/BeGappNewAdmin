@@ -258,8 +258,8 @@ class _UpdateGameState extends State<UpdateGame> {
   }
 
   getVariables() {
-    debugPrint(variables.length);
-    debugPrint(grid.length);
+    debugPrint(variables.length.toString());
+    debugPrint(grid.length.toString());
     grid = [
       Flex(
         direction: Axis.horizontal,
