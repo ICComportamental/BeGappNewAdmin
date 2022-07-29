@@ -117,14 +117,14 @@ class _GamesTableState extends State<GamesTable> {
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() async {
-          String token = await Database.verifyToken();
-          DateTime dateTime = DateTime.parse(token);
-          // print(dateTime.isBefore(DateTime.now()));
-          // print(dateTime);
-        }),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (() async {
+      //     String token = await Database.verifyToken();
+      //     DateTime dateTime = DateTime.parse(token);
+      //     // print(dateTime.isBefore(DateTime.now()));
+      //     // print(dateTime);
+      //   }),
+      // ),
       body: PagedTable(
         table: DataTable(
             headingRowColor: MaterialStateColor.resolveWith(
