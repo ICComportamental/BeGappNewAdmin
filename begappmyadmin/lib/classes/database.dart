@@ -12,8 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'NavigationService.dart';
 
 class Database {
-  static const defaultUrl = "https://localhost:44370/api/v1/";
-  // static const defaultUrl = "https://api.begapp.com.br/api/v1/";
+  // static const defaultUrl = "https://localhost:44370/api/v1/";
+  static const defaultUrl = "https://api.begapp.com.br/api/v1/";
 
   static getToken() async {
     localStorage = await SharedPreferences.getInstance();
@@ -362,6 +362,27 @@ class Database {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token",
         "ExperimentId": experimentId
+        //localStorage.getString('gameId')! //gameId, //"620a9710c66231230648bd41"
+      },
+    );
+    checkRefreshToken(res);
+    debugPrint(res.body);
+    String body = res.body;
+
+    return jsonDecode(body) as List;
+  }
+
+  static getRoundsResult(String participantId) async {
+    localStorage = await SharedPreferences.getInstance();
+
+    String url = defaultUrl + "Results";
+    String token = await getToken();
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        "ParticipantId": participantId
         //localStorage.getString('gameId')! //gameId, //"620a9710c66231230648bd41"
       },
     );

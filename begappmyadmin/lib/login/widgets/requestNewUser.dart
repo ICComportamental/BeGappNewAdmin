@@ -19,17 +19,15 @@ class RequestNewUser extends StatefulWidget {
 }
 
 class _RequestNewUserState extends State<RequestNewUser> {
-  TextEditingController txtName = TextEditingController(text: "Rosiara");
+  TextEditingController txtName = TextEditingController(text: "");
 
-  TextEditingController txtNewUsername = TextEditingController(text: "Rosiara");
+  TextEditingController txtNewUsername = TextEditingController(text: "");
 
-  TextEditingController txtEmail =
-      TextEditingController(text: "rosiara.carneiro2012@gmail.com");
+  TextEditingController txtEmail = TextEditingController(text: "");
 
-  TextEditingController txtPassword = TextEditingController(text: "1234");
+  TextEditingController txtPassword = TextEditingController(text: "");
 
-  TextEditingController txtConfirmPassword =
-      TextEditingController(text: "1234");
+  TextEditingController txtConfirmPassword = TextEditingController(text: "");
 
   final _formKey = GlobalKey<FormState>();
 
@@ -199,7 +197,7 @@ class _RequestNewUserState extends State<RequestNewUser> {
                     child: Container(
                         width: double.infinity,
                         decoration: const BoxDecoration(
-                          color: Colors.blue,
+                          color: Colors.purple,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
                         child: TextButton(

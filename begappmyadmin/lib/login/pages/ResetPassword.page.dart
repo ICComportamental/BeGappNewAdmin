@@ -54,7 +54,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     return Scaffold(
         body: Container(
-            color: Colors.blue,
+            color: Colors.purple,
             alignment: Alignment.center,
             child: Container(
                 height: height / 2,
@@ -136,7 +136,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             child: Container(
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
-                                  color: Colors.blue,
+                                  color: Colors.purple,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                 ),

@@ -50,7 +50,7 @@ class ForgotPasswordSendEmailPage extends StatelessWidget {
     // txtEmail.text = "usuario@gmail.com";
     return Scaffold(
       body: Container(
-          color: Colors.blue,
+          color: Colors.purple,
           alignment: Alignment.center,
           child: Container(
               height: height / 2.5,
@@ -94,7 +94,7 @@ class ForgotPasswordSendEmailPage extends StatelessWidget {
                               alignment: Alignment.center,
                               margin: EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                  color: Colors.blue[100],
+                                  color: Colors.purple[100],
                                   borderRadius: BorderRadius.circular(5)),
                               child: Text(
                                 AppLocalizations.of(context)
@@ -125,7 +125,7 @@ class ForgotPasswordSendEmailPage extends StatelessWidget {
                           child: Container(
                               width: double.infinity,
                               decoration: const BoxDecoration(
-                                color: Colors.blue,
+                                color: Colors.purple,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
                               ),

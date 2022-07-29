@@ -1,6 +1,7 @@
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/connection.dart';
 import 'package:begappmyadmin/classes/database.dart';
+import 'package:begappmyadmin/login/pages/forgotPasswordSendEmail.page.dart';
 import 'package:begappmyadmin/login/widgets/requestNewUser.dart';
 import 'package:begappmyadmin/main.dart';
 import 'package:flutter/material.dart';
@@ -203,10 +204,10 @@ class _LoginPageState extends State<LoginPage> {
                                           textAlign: TextAlign.left,
                                         ),
                                         onTap: () {
-                                          // Navigator.pushNamed(
-                                          //     context,
-                                          //     ForgotPasswordSendEmailPage
-                                          //         .routeName);
+                                          Navigator.pushNamed(
+                                              context,
+                                              ForgotPasswordSendEmailPage
+                                                  .routeName);
                                         },
                                       ),
                                     )),

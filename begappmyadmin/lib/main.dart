@@ -51,9 +51,12 @@ void main() async {
 
 late SharedPreferences localStorage;
 
-TextEditingController username =
-    new TextEditingController(text: "yasmin.carolina12@gmail.com");
-TextEditingController password = new TextEditingController(text: "1234");
+TextEditingController username = TextEditingController(text: "");
+TextEditingController password = TextEditingController(text: "");
+// TextEditingController username =
+//     TextEditingController(text: "yasmin.carolina12@gmail.com");
+// TextEditingController password = TextEditingController(text: "1234");
+
 String gameId =
     ""; //id do jogo de onde provem os experimentos na pagina da tabela dos experiments
 
@@ -80,14 +83,14 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V4 - edit game - see experiments");
+    print("V5 - show rounds result table e participant info");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
             navigatorKey: NavigationService.navigatorKey,
-            initialRoute: "/GamesPage",
+            initialRoute: "/login",
             routes: {
               // When navigating to the "/" route, build the FirstScreen widget.
               HomePage.routeName: (context) => HomePage(),
