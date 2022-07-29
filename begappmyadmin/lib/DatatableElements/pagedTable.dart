@@ -6,6 +6,8 @@ import 'package:begappmyadmin/DatatableElements/searchField.dart';
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:flutter/material.dart';
 
+import '../classes/MyCustomScrollBehavior.dart';
+
 class PagedTable extends StatefulWidget {
   final Search? search;
   final Widget table;

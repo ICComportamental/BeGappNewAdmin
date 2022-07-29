@@ -138,7 +138,7 @@ class _GamesTableState extends State<GamesTable> {
               DataColumn(label: Text('#')),
               DataColumn(label: Text('Nome')),
               DataColumn(label: Text('Descrição')),
-              DataColumn(label: Text('edit')),
+              DataColumn(label: Text('Editar')),
               DataColumn(label: Text('Adicionar Experimento')),
               DataColumn(label: Text('Listar Experimentos')),
             ],

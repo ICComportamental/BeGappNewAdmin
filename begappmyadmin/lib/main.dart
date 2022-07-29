@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'classes/MyCustomScrollBehavior.dart';
 import 'classes/NavigationService.dart';
 import 'login/pages/forgotPasswordSendEmail.page.dart';
 import 'pages/experiments.page.dart';
@@ -83,12 +84,13 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V5 - show rounds result table e participant info");
+    print("V6 - scroll horizontal");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           widget.appLanguage.changeLanguage(Locale("pt"));
           return MaterialApp(
+            scrollBehavior: MyCustomScrollBehavior(),
             navigatorKey: NavigationService.navigatorKey,
             initialRoute: "/login",
             routes: {

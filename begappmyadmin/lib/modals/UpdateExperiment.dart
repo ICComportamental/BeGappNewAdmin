@@ -278,7 +278,7 @@ class _UpdateExperimentState extends State<UpdateExperiment> {
                   },
                 ),
                 Text(
-                  "Resultados públicas",
+                  "Resultados públicos",
                   style: TextStyle(fontSize: 20),
                 )
               ],
