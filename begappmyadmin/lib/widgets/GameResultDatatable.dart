@@ -59,8 +59,8 @@ class _GameResultTableState extends State<GameResultTable> {
   }
 
   getRows() {
-    print("Games: ${rounds.length}");
-    print("Gamesall: ${roundsAll.length}");
+    debugPrint("Games: ${rounds.length}");
+    debugPrint("Gamesall: ${roundsAll.length}");
     rows = [];
     for (var i = 0; i < rounds.length; i++) {
       List<DataCell> cells = [];
@@ -218,7 +218,7 @@ class _GameResultTableState extends State<GameResultTable> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if (indexPage > 1) indexPage--;
                   rounds = roundsAll.sublist(
                       (nRounds * (indexPage - 1) > 0)
@@ -247,7 +247,7 @@ class _GameResultTableState extends State<GameResultTable> {
               ),
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if ((nRounds * indexPage) < roundsAll.length) indexPage++;
                   rounds = roundsAll.sublist(
                       nRounds * (indexPage - 1),

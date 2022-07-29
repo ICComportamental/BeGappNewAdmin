@@ -80,11 +80,11 @@ class _UpdateGameState extends State<UpdateGame> {
     txtGameDesc.text = widget.game.description;
     participant = widget.game.participant;
     widget.game.parameters.forEach((key, value) {
-      print("value:" + key);
+      debugPrint("value:" + key);
       int i = widget.game.parameters.keys.toList().indexOf(key);
       String defaulfPar = "";
       widget.game.defaultParameters.entries.forEach((element) {
-        print("ELEMENT:" + element.value);
+        debugPrint("ELEMENT:" + element.value);
         if (element.key == key) defaulfPar = element.value;
       });
       variables.add(GameVariable(value, TextEditingController(text: key),
@@ -258,8 +258,8 @@ class _UpdateGameState extends State<UpdateGame> {
   }
 
   getVariables() {
-    print(variables.length);
-    print(grid.length);
+    debugPrint(variables.length);
+    debugPrint(grid.length);
     grid = [
       Flex(
         direction: Axis.horizontal,

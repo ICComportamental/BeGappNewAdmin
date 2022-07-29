@@ -52,8 +52,8 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
   }
 
   getRows() {
-    print("Games: ${experiments.length}");
-    print("Gamesall: ${experimentsAll.length}");
+    debugPrint("Games: ${experiments.length}");
+    debugPrint("Gamesall: ${experimentsAll.length}");
     rows = [];
     for (var i = 0; i < experiments.length; i++) {
       List<DataCell> cells = [];
@@ -229,7 +229,7 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if (indexPage > 1) indexPage--;
                   experiments = experimentsAll.sublist(
                       (nGames * (indexPage - 1) > 0)
@@ -258,7 +258,7 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
               ),
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if ((nGames * indexPage) < experimentsAll.length) indexPage++;
                   experiments = experimentsAll.sublist(
                       nGames * (indexPage - 1),

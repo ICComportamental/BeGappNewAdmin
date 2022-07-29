@@ -43,8 +43,8 @@ class _GamesTableState extends State<GamesTable> {
   List<DataRow> rows = [];
 
   getRows() {
-    print("Games: ${games.length}");
-    print("Gamesall: ${gamesAll.length}");
+    debugPrint("Games: ${games.length}");
+    debugPrint("Gamesall: ${gamesAll.length}");
     rows = [];
     for (var i = 0; i < games.length; i++) {
       rows.add(DataRow(
@@ -121,8 +121,8 @@ class _GamesTableState extends State<GamesTable> {
         onPressed: (() async {
           String token = await Database.verifyToken();
           DateTime dateTime = DateTime.parse(token);
-          print(dateTime.isBefore(DateTime.now()));
-          print(dateTime);
+          // print(dateTime.isBefore(DateTime.now()));
+          // print(dateTime);
         }),
       ),
       body: PagedTable(

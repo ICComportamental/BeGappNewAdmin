@@ -246,8 +246,8 @@ class _CreateGameState extends State<CreateGame> {
   }
 
   getVariables() {
-    print(variables.length);
-    print(grid.length);
+    // print(variables.length);
+    // print(grid.length);
     grid = [
       Flex(
         direction: Axis.horizontal,

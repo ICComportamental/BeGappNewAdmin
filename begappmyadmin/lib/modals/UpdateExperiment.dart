@@ -67,11 +67,11 @@ class _UpdateExperimentState extends State<UpdateExperiment> {
     isConfigsPublic = widget.experiment.isConfigsPublic;
 
     widget.parameters.forEach((key, value) {
-      print("value:" + key);
+      debugPrint("value:" + key);
       int i = widget.parameters.keys.toList().indexOf(key);
       String defaulfPar = "";
       widget.experiment.parameters.entries.forEach((element) {
-        print("ELEMENT:" + element.value);
+        debugPrint("ELEMENT:" + element.value);
         if (element.key == key) defaulfPar = element.value;
       });
       variables.add(GameVariable(value, TextEditingController(text: key),
@@ -213,8 +213,8 @@ class _UpdateExperimentState extends State<UpdateExperiment> {
   }
 
   getVariables() {
-    print(variables.length);
-    print(grid.length);
+    debugPrint(variables.length.toString());
+    debugPrint(grid.length.toString());
     grid = [
       Flex(
         direction: Axis.horizontal,
@@ -252,7 +252,7 @@ class _UpdateExperimentState extends State<UpdateExperiment> {
                 Checkbox(
                   value: isConfigsPublic,
                   onChanged: (value) {
-                    print(isConfigsPublic);
+                    debugPrint(isConfigsPublic.toString());
                     isConfigsPublic = !isConfigsPublic;
                     getVariables();
                     setState(() {});

@@ -59,8 +59,8 @@ class _ParticipantsTableState extends State<ParticipantsTable> {
   }
 
   getRows() {
-    print("Games: ${participants.length}");
-    print("Gamesall: ${participantsAll.length}");
+    debugPrint("Games: ${participants.length}");
+    debugPrint("Gamesall: ${participantsAll.length}");
     rows = [];
     for (var i = 0; i < participants.length; i++) {
       List<DataCell> cells = [];
@@ -229,7 +229,7 @@ class _ParticipantsTableState extends State<ParticipantsTable> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if (indexPage > 1) indexPage--;
                   participants = participantsAll.sublist(
                       (nParticipants * (indexPage - 1) > 0)
@@ -258,7 +258,7 @@ class _ParticipantsTableState extends State<ParticipantsTable> {
               ),
               InkWell(
                 onTap: () {
-                  print("object");
+                  debugPrint("object");
                   if ((nParticipants * indexPage) < participantsAll.length)
                     indexPage++;
                   participants = participantsAll.sublist(
