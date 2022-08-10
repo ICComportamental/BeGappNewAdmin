@@ -5,6 +5,7 @@ import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/pages/participants.page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ExperimentsTable extends StatefulWidget {
   List<Experiment> experiments;
@@ -43,7 +44,7 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
   List<DataColumn> columns = [];
 
   getColumns() {
-    columns.add(const DataColumn(label: Text('#')));
+    columns.add(const DataColumn(label: Text('Código')));
     experiments.first.parameters.entries.forEach((element) {
       columns.add(DataColumn(label: Text(element.key)));
     });
@@ -57,8 +58,10 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
     rows = [];
     for (var i = 0; i < experiments.length; i++) {
       List<DataCell> cells = [];
-      cells.add(DataCell(
-          Text((experimentsAll.indexOf(experiments[i]) + 1).toString())));
+      cells.add(DataCell(SelectableText(experiments[i].id)));
+      // cells.add(DataCell(Text(experiments[i].id)));
+      // cells.add(DataCell(
+      //     Text((experimentsAll.indexOf(experiments[i]) + 1).toString())));
       experiments[i].parameters.entries.forEach((element) {
         cells.add(DataCell(Text(element.value)));
       });

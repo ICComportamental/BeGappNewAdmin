@@ -1,6 +1,7 @@
 import 'package:begappmyadmin/DatatableElements/pagedTable.dart';
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
+import 'package:begappmyadmin/classes/excel.dart';
 import 'package:begappmyadmin/classes/experiment.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/classes/participant.dart';
@@ -56,6 +57,7 @@ class _ParticipantsTableState extends State<ParticipantsTable> {
     columns.add(const DataColumn(label: Text("Genêro")));
 
     columns.add(const DataColumn(label: Text('Listar Resultados')));
+    columns.add(const DataColumn(label: Text('Download')));
   }
 
   getRows() {
@@ -86,6 +88,17 @@ class _ParticipantsTableState extends State<ParticipantsTable> {
                     builder: (context) =>
                         GameResultPage(participantId: participants[i].id)),
               );
+            },
+          ),
+        ),
+      );
+      cells.add(
+        DataCell(
+          InkWell(
+            child: Icon(Icons.download),
+            onTap: () async {
+              var excel = Excelfile();
+              excel.createSheet(participants);
             },
           ),
         ),

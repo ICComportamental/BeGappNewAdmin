@@ -52,11 +52,11 @@ void main() async {
 
 late SharedPreferences localStorage;
 
-TextEditingController username = TextEditingController(text: "");
-TextEditingController password = TextEditingController(text: "");
-// TextEditingController username =
-//     TextEditingController(text: "yasmin.carolina12@gmail.com");
-// TextEditingController password = TextEditingController(text: "1234");
+// TextEditingController username = TextEditingController(text: "");
+// TextEditingController password = TextEditingController(text: "");
+TextEditingController username =
+    TextEditingController(text: "yasmin.carolina12@gmail.com");
+TextEditingController password = TextEditingController(text: "1234");
 
 String gameId =
     ""; //id do jogo de onde provem os experimentos na pagina da tabela dos experiments
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V6 - scroll horizontal");
+    print("V7 - exibir id do experimento");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
