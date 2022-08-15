@@ -9,6 +9,8 @@ import 'package:begappmyadmin/pages/experiments.page.dart';
 import 'package:begappmyadmin/widgets/customDatatable.dart';
 import 'package:flutter/material.dart';
 
+import '../DatatableElements/classes/search.dart';
+
 class GamesTable extends StatefulWidget {
   List<Game> games;
   GamesTable(this.games);
@@ -20,7 +22,7 @@ class GamesTable extends StatefulWidget {
 class _GamesTableState extends State<GamesTable> {
   List<Game> gamesAll = [];
   List<Game> games = [];
-  int nGames = 2;
+  int nGames = 6;
   int indexPage = 1;
   @override
   void initState() {
@@ -117,6 +119,7 @@ class _GamesTableState extends State<GamesTable> {
     }
 
     return Scaffold(
+      appBar: AppBar(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: (() async {
       //     String token = await Database.verifyToken();
@@ -126,6 +129,32 @@ class _GamesTableState extends State<GamesTable> {
       //   }),
       // ),
       body: PagedTable(
+        search: Search(
+          [
+            AppLocalizations.of(context).translate('Name'),
+            AppLocalizations.of(context).translate('description'),
+          ],
+          [
+            "name",
+            "description",
+          ],
+          (String filter, String value) async {
+            List snap = await Database.getGames(filter: filter, value: value)
+                as List<dynamic>;
+            List<Game> gamesSearch = [];
+            for (int index = 0; index < snap.length; index++) {
+              gamesSearch.add(Game.fromJson(snap[index]));
+            }
+            setState(() {
+              gamesAll = gamesSearch;
+              games = gamesAll.sublist(
+                  0, nGames < gamesAll.length ? nGames : gamesAll.length);
+              getRows();
+
+              print("FILTER$filter VALUE:$value");
+            });
+          },
+        ),
         table: DataTable(
             headingRowColor: MaterialStateColor.resolveWith(
               (states) {

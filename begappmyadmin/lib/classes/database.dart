@@ -12,8 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'NavigationService.dart';
 
 class Database {
-  // static const defaultUrl = "https://localhost:44370/api/v1/";
-  static const defaultUrl = "https://api.begapp.com.br/api/v1/";
+  static const defaultUrl = "https://localhost:44370/api/v1/";
+  // static const defaultUrl = "https://api.begapp.com.br/api/v1/";
 
   static getToken() async {
     localStorage = await SharedPreferences.getInstance();
@@ -312,8 +312,9 @@ class Database {
     return message;
   }
 
-  static getGames() async {
+  static getGames({String filter = "", String value = ""}) async {
     String url = defaultUrl + "Games";
+    if (value != "") url += "?filter=$filter&value=$value";
     String token = await getToken();
     var res = await http.get(
       Uri.parse(url),
