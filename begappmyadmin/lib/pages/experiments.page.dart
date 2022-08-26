@@ -52,9 +52,6 @@ class _ExperimentsPageState extends State<ExperimentsPage> {
                 experiments.add(Experiment.fromJson(snap[index]));
               }
 
-              // print(snap[0]);
-              // print(experiments[0].description);
-
               return Container(
                 child: ExperimentsTable(experiments, widget.game),
               );

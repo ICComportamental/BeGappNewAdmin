@@ -221,10 +221,10 @@ class _CreateGameState extends State<CreateGame> {
                             jsonDecode(results),
                           ),
                         );
-                        await Dialogs.okDialog(
-                          txt,
-                          context,
-                        );
+                        await Dialogs.okDialog(txt, context, onPop: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        });
                       }
                     },
                   ),

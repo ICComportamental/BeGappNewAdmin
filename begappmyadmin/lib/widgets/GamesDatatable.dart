@@ -87,20 +87,21 @@ class _GamesTableState extends State<GamesTable> {
                 child: InkWell(
                   child: Icon(Icons.list),
                   onTap: () async {
-                    // await Dialogs.showCreateExperiment(context, games[i]);
-                    // setState(() {});
-                    // Navigator.pushNamed(
-                    //   context,
-                    //   ExperimentsPage.routeName,
-                    //   arguments: <String, String>{'gameId': games[i].id},
-                    // );
-                    // gameId = games[i].id;
                     localStorage.setString('gameId', games[i].id);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ExperimentsPage(game: games[i])));
+                    List r = await Database.getExperiments(games[i].id)
+                        as List<dynamic>;
+
+                    if (r.isEmpty) {
+                      await Dialogs.okDialog(
+                          "Esse jogo não possui nenhum experimento criado",
+                          context);
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ExperimentsPage(game: games[i])));
+                    }
                   },
                 ),
               ),
@@ -119,7 +120,13 @@ class _GamesTableState extends State<GamesTable> {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+          leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: (() async {
       //     String token = await Database.verifyToken();

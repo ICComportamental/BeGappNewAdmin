@@ -52,12 +52,16 @@ class _PagedTableState extends State<PagedTable> {
           if (widget.table != null)
             Center(
               child: Container(
+                  margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(width: 1),
                   ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: widget.table,
+                  child: Scrollbar(
+                    isAlwaysShown: true,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: widget.table,
+                    ),
                   )),
             ),
           space(),

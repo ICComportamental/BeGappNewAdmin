@@ -1,4 +1,5 @@
 import 'package:begappmyadmin/classes/database.dart';
+import 'package:begappmyadmin/classes/dialogs.dart';
 import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/widgets/FutureCheckLogin.dart';
 import 'package:begappmyadmin/widgets/GamesDatatable.dart';
@@ -43,9 +44,11 @@ class _GamesPageState extends State<GamesPage> {
               games.add(Game.fromJson(snap[index]));
             }
 
-            print(snap[0]);
-            print(games[0].name);
-
+            if (games.isEmpty) {
+              return Scaffold(
+                body: Center(child: Text("Nenhum jogo foi criado.")),
+              );
+            }
             return Container(
               child: GamesTable(games),
             );

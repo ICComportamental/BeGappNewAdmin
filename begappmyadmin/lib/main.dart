@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print("V8 - Pesquisa na tabela Games");
+    print("V9 - Correções");
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {

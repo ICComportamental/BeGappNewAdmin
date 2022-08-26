@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:begappmyadmin/DatatableElements/pagedTable.dart';
 import 'package:begappmyadmin/app_localizations.dart';
 import 'package:begappmyadmin/classes/dialogs.dart';
@@ -6,6 +8,9 @@ import 'package:begappmyadmin/classes/game.dart';
 import 'package:begappmyadmin/pages/participants.page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../DatatableElements/classes/search.dart';
+import '../classes/database.dart';
 
 class ExperimentsTable extends StatefulWidget {
   List<Experiment> experiments;
@@ -19,13 +24,16 @@ class ExperimentsTable extends StatefulWidget {
 class _ExperimentsTableState extends State<ExperimentsTable> {
   List<Experiment> experimentsAll = [];
   List<Experiment> experiments = [];
-  int nGames = 2;
+  int nExperiments = 2;
   int indexPage = 1;
   @override
   void initState() {
     experimentsAll = widget.experiments;
     experiments = experimentsAll.sublist(
-        0, nGames < experimentsAll.length ? nGames : experimentsAll.length);
+        0,
+        nExperiments < experimentsAll.length
+            ? nExperiments
+            : experimentsAll.length);
     getColumns();
     getRows();
     super.initState();
@@ -156,7 +164,59 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+          leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )),
       body: PagedTable(
+        search: Search(
+          [
+            AppLocalizations.of(context).translate('code'),
+            // AppLocalizations.of(context).translate('description'),
+          ],
+          [
+            "id",
+          ],
+          (String filter, String value) async {
+            if (value != "") {
+              try {
+                // List snap = await Database.getExperiments(
+                //     widget.experiments.first.gameId,
+                //     filter: filter,
+                //     value: value) as List<dynamic>;
+                // List<Experiment> experimentsSearch = [];
+                // for (int index = 0; index < snap.length; index++) {
+                //   experimentsSearch.add(Experiment.fromJson(snap[index]));
+                // }
+                var snap = await Database.getExperiment(value);
+
+                List<Experiment> experimentsSearch = [];
+
+                experimentsSearch.add(Experiment.fromJson(jsonDecode(snap)));
+
+                experimentsAll = experimentsSearch;
+              } catch (e) {
+                experimentsAll = widget.experiments;
+              }
+            } else {
+              experimentsAll = widget.experiments;
+            }
+
+            setState(() {
+              experiments = experimentsAll.sublist(
+                  0,
+                  nExperiments < experimentsAll.length
+                      ? nExperiments
+                      : experimentsAll.length);
+              getRows();
+
+              print("FILTER$filter VALUE:$value");
+            });
+          },
+        ),
         table: DataTable(
             headingRowColor: MaterialStateColor.resolveWith(
               (states) {
@@ -178,9 +238,11 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
         previous: () {
           if (indexPage > 1) indexPage--;
           experiments = experimentsAll.sublist(
-              (nGames * (indexPage - 1) > 0) ? nGames * (indexPage - 1) : 0,
-              (nGames * indexPage) < experimentsAll.length
-                  ? (nGames * indexPage)
+              (nExperiments * (indexPage - 1) > 0)
+                  ? nExperiments * (indexPage - 1)
+                  : 0,
+              (nExperiments * indexPage) < experimentsAll.length
+                  ? (nExperiments * indexPage)
                   : experimentsAll.length);
 
           setState(() {
@@ -188,11 +250,11 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
           });
         },
         next: () {
-          if ((nGames * indexPage) < experimentsAll.length) indexPage++;
+          if ((nExperiments * indexPage) < experimentsAll.length) indexPage++;
           experiments = experimentsAll.sublist(
-              nGames * (indexPage - 1),
-              (nGames * indexPage) < experimentsAll.length
-                  ? (nGames * indexPage)
+              nExperiments * (indexPage - 1),
+              (nExperiments * indexPage) < experimentsAll.length
+                  ? (nExperiments * indexPage)
                   : experimentsAll.length);
 
           setState(() {
@@ -235,11 +297,11 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
                   debugPrint("object");
                   if (indexPage > 1) indexPage--;
                   experiments = experimentsAll.sublist(
-                      (nGames * (indexPage - 1) > 0)
-                          ? nGames * (indexPage - 1)
+                      (nExperiments * (indexPage - 1) > 0)
+                          ? nExperiments * (indexPage - 1)
                           : 0,
-                      (nGames * indexPage) < experimentsAll.length
-                          ? (nGames * indexPage)
+                      (nExperiments * indexPage) < experimentsAll.length
+                          ? (nExperiments * indexPage)
                           : experimentsAll.length);
 
                   setState(() {
@@ -262,11 +324,12 @@ class _ExperimentsTableState extends State<ExperimentsTable> {
               InkWell(
                 onTap: () {
                   debugPrint("object");
-                  if ((nGames * indexPage) < experimentsAll.length) indexPage++;
+                  if ((nExperiments * indexPage) < experimentsAll.length)
+                    indexPage++;
                   experiments = experimentsAll.sublist(
-                      nGames * (indexPage - 1),
-                      (nGames * indexPage) < experimentsAll.length
-                          ? (nGames * indexPage)
+                      nExperiments * (indexPage - 1),
+                      (nExperiments * indexPage) < experimentsAll.length
+                          ? (nExperiments * indexPage)
                           : experimentsAll.length);
 
                   setState(() {

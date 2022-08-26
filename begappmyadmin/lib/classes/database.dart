@@ -329,11 +329,13 @@ class Database {
     return jsonDecode(body) as List;
   }
 
-  static getExperiments(String gameId) async {
+  static getExperiments(String gameId,
+      {String filter = "", String value = ""}) async {
     print("GMAEID: " + localStorage.getString('gameId')!);
     localStorage = await SharedPreferences.getInstance();
 
     String url = defaultUrl + "Experiments";
+    if (value != "") url += "?filter=$filter&value=$value";
     String token = await getToken();
     var res = await http.get(
       Uri.parse(url),
@@ -349,6 +351,24 @@ class Database {
     String body = res.body;
 
     return jsonDecode(body) as List;
+  }
+
+  static getExperiment(String experimentId) async {
+    String url = defaultUrl + "Experiments/${experimentId}";
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    String body = res.body;
+    if (res.statusCode != 200) {
+      return jsonDecode(body)['message'];
+    }
+    // debugPrint(res.body);
+    print(jsonDecode(body)['message']);
+    return body;
+    // return jsonDecode(body) as List;
   }
 
   static getParticipants(String experimentId) async {
